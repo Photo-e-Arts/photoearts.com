@@ -32,13 +32,34 @@
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 1rem;
+      gap: 1.5rem;
       padding: 2rem;
     }
-    .gallery img {
+    .item {
       width: 280px;
+      text-align: center;
+      background: #fff;
       border-radius: 12px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      padding: 1rem;
+    }
+    .item img {
+      width: 100%;
+      border-radius: 12px;
+      margin-bottom: 1rem;
+    }
+    .item button {
+      background-color: #ff5a5f;
+      color: white;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      font-size: 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .item button:hover {
+      background-color: #e0484d;
     }
     footer {
       background: #f2f2f2;
@@ -51,6 +72,23 @@
       color: #222;
       text-decoration: none;
     }
+
+    /* Responsividade */
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 2.2rem;
+      }
+      h2 {
+        font-size: 1.1rem;
+      }
+      .gallery {
+        padding: 1rem;
+        gap: 1rem;
+      }
+      .item {
+        width: 90%;
+      }
+    }
   </style>
 </head>
 <body>
@@ -60,12 +98,30 @@
   </header>
 
   <section class="gallery">
-    <img src="491430817_17966049734905369_5914816526734070560_n.jpg" alt="Caneca personalizada 1">
-    <img src="Imagem do WhatsApp de 2025-04-30 à(s) 15.26.56_7bac499b.jpg" alt="Caneca personalizada 2">
-    <img src="Imagem do WhatsApp de 2025-04-30 à(s) 15.27.46_6991ad5d.jpg" alt="Caneca personalizada 3">
-    <img src="Screenshot_4.png" alt="Caneca personalizada 4">
-    <img src="Screenshot_5.png" alt="Caneca personalizada 5">
-    <img src="Screenshot_6.png" alt="Caneca personalizada 6">
+    <div class="item">
+      <img src="491430817_17966049734905369_5914816526734070560_n.jpg" alt="Caneca personalizada 1">
+      <button>Comprar</button>
+    </div>
+    <div class="item">
+      <img src="Imagem do WhatsApp de 2025-04-30 à(s) 15.26.56_7bac499b.jpg" alt="Caneca personalizada 2">
+      <button>Comprar</button>
+    </div>
+    <div class="item">
+      <img src="Imagem do WhatsApp de 2025-04-30 à(s) 15.27.46_6991ad5d.jpg" alt="Caneca personalizada 3">
+      <button>Comprar</button>
+    </div>
+    <div class="item">
+      <img src="Screenshot_4.png" alt="Caneca personalizada 4">
+      <button>Comprar</button>
+    </div>
+    <div class="item">
+      <img src="Screenshot_5.png" alt="Caneca personalizada 5">
+      <button>Comprar</button>
+    </div>
+    <div class="item">
+      <img src="Screenshot_6.png" alt="Caneca personalizada 6">
+      <button>Comprar</button>
+    </div>
   </section>
 
   <footer>
