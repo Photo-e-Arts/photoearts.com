@@ -1,19 +1,20 @@
-# Reexecutando após reset: Gerar a primeira parte do código corrigido novamente
-
-parte_1_corrigida = """
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Photo & Arts - Gráfica e Personalizados</title>
   <style>
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
     body {
-      margin: 0; padding: 0;
+      margin: 0;
+      padding: 0;
       font-family: Arial, sans-serif;
       background: #dbe3ec url('https://www.transparenttextures.com/patterns/symphony.png');
-      color: #333; display: flex;
+      color: #333;
+      display: flex;
       flex-direction: column;
       min-height: 100vh;
     }
@@ -44,10 +45,12 @@ parte_1_corrigida = """
       gap: 1.5rem;
       padding: 2rem;
       flex-grow: 1;
+      max-width: 1400px;
+      margin: 0 auto;
     }
     .item {
       width: 280px;
-      max-width: 100%;
+      flex: 0 0 auto;
       text-align: center;
       background: #fff;
       border-radius: 12px;
@@ -57,7 +60,6 @@ parte_1_corrigida = """
       flex-direction: column;
       transition: transform 0.3s ease, box-shadow 0.3s ease;
       position: relative;
-      flex-shrink: 0;
     }
     .item:hover {
       transform: scale(1.03);
@@ -67,11 +69,15 @@ parte_1_corrigida = """
       border-radius: 12px;
       margin-bottom: 0.5rem;
     }
-    .item img.soldout { filter: grayscale(1); }
+    .item img.soldout {
+      filter: grayscale(1);
+    }
     .soldout-text {
       position: absolute;
-      top: 10px; left: 10px;
-      background: red; color: white;
+      top: 10px;
+      left: 10px;
+      background: red;
+      color: white;
       padding: 0.3rem 0.6rem;
       font-size: 0.9rem;
       border-radius: 5px;
@@ -91,8 +97,13 @@ parte_1_corrigida = """
       background: linear-gradient(to right, #e0484d, #e76e54);
       transform: scale(1.05);
     }
-    .preco del { color: #999; margin-right: 5px; }
-    .preco strong { color: #d32f2f; }
+    .preco del {
+      color: #999;
+      margin-right: 5px;
+    }
+    .preco strong {
+      color: #d32f2f;
+    }
     footer {
       background: #f2f2f2;
       text-align: center;
@@ -156,16 +167,8 @@ parte_1_corrigida = """
   </div>
 
   <section class="gallery" id="galeria"></section>
-"""
-
-parte1_path = "/mnt/data/parte1_corrigida_photo_arts.html"
-with open(parte1_path, "w", encoding="utf-8") as f:
-    f.write(parte_1_corrigida)
-
-parte1_path
-# Gerar a segunda parte do código corrigido (continuação do HTML e scripts)
-parte_2_corrigida = """
-<!-- Compra Individual -->
+  
+<!-- Seção de compra individual -->
 <section class="compra-area" id="compra" style="display:none; flex-direction: column; align-items: center; padding: 2rem;">
   <div class="produto-info" style="text-align:center;">
     <img id="compra-img" src="" alt="Produto" style="max-width: 250px; border-radius: 12px;">
@@ -285,11 +288,3 @@ parte_2_corrigida = """
 
 </body>
 </html>
-"""
-
-# Salvar a segunda parte como arquivo
-parte2_path = "/mnt/data/parte2_corrigida_photo_arts.html"
-with open(parte2_path, "w", encoding="utf-8") as f:
-    f.write(parte_2_corrigida)
-
-parte2_pat
