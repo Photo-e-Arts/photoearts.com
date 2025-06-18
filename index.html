@@ -1,22 +1,23 @@
+# Reexecutando após reset: Gerar a primeira parte do código corrigido novamente
+
+parte_1_corrigida = """
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Photo & Arts - Gráfica e Personalizados</title>
   <style>
+    * { box-sizing: border-box; }
     body {
-      margin: 0;
-      padding: 0;
+      margin: 0; padding: 0;
       font-family: Arial, sans-serif;
       background: #dbe3ec url('https://www.transparenttextures.com/patterns/symphony.png');
-      color: #333;
-      display: flex;
+      color: #333; display: flex;
       flex-direction: column;
       min-height: 100vh;
     }
     header {
-      position: relative;
       background: #ff5a5f;
       padding: 1rem 2rem;
       display: flex;
@@ -24,7 +25,7 @@
       justify-content: space-between;
     }
     .logo {
-      max-height: 120px;
+      max-height: 150px;
       cursor: pointer;
     }
     .carrinho-icon {
@@ -33,6 +34,8 @@
       padding: 0.5rem 1rem;
       border-radius: 20px;
       cursor: pointer;
+      font-weight: bold;
+      white-space: nowrap;
     }
     .gallery {
       display: flex;
@@ -44,6 +47,7 @@
     }
     .item {
       width: 280px;
+      max-width: 100%;
       text-align: center;
       background: #fff;
       border-radius: 12px;
@@ -53,6 +57,7 @@
       flex-direction: column;
       transition: transform 0.3s ease, box-shadow 0.3s ease;
       position: relative;
+      flex-shrink: 0;
     }
     .item:hover {
       transform: scale(1.03);
@@ -62,15 +67,11 @@
       border-radius: 12px;
       margin-bottom: 0.5rem;
     }
-    .item img.soldout {
-      filter: grayscale(1);
-    }
+    .item img.soldout { filter: grayscale(1); }
     .soldout-text {
       position: absolute;
-      top: 10px;
-      left: 10px;
-      background: red;
-      color: white;
+      top: 10px; left: 10px;
+      background: red; color: white;
       padding: 0.3rem 0.6rem;
       font-size: 0.9rem;
       border-radius: 5px;
@@ -90,33 +91,8 @@
       background: linear-gradient(to right, #e0484d, #e76e54);
       transform: scale(1.05);
     }
-    .preco del {
-      color: #999;
-      margin-right: 5px;
-    }
-    .preco strong {
-      color: #d32f2f;
-    }
-    .sucesso, .info {
-      display: none;
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      padding: 1rem 2rem;
-      border-radius: 6px;
-      z-index: 1000;
-      font-weight: bold;
-      text-align: center;
-    }
-    .sucesso { background: #d4edda; border: 1px solid #c3e6cb; color: #155724; }
-    .info { background: #fff3cd; border: 1px solid #ffeeba; color: #856404; }
-    .sucesso::after, .info::after {
-      content: " ×";
-      margin-left: 1rem;
-      cursor: pointer;
-      font-weight: bold;
-    }
+    .preco del { color: #999; margin-right: 5px; }
+    .preco strong { color: #d32f2f; }
     footer {
       background: #f2f2f2;
       text-align: center;
@@ -132,6 +108,7 @@
       bottom: 20px;
       right: 20px;
       z-index: 999;
+      font-size: 16px;
     }
     .whatsapp-popup a {
       display: flex;
@@ -144,116 +121,100 @@
       font-weight: bold;
       box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     }
+    .busca-container {
+      text-align: center;
+      padding: 1rem;
+      position: relative;
+    }
+    .busca-container input {
+      padding: 0.5rem 2.5rem 0.5rem 1rem;
+      width: 80%;
+      max-width: 400px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    .busca-container .lupa {
+      position: absolute;
+      right: 12%;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #888;
+      pointer-events: none;
+      font-size: 1.2rem;
+    }
   </style>
 </head>
 <body>
-
   <header>
     <img src="minhalogo.png" alt="Logo Photo & Arts" class="logo" onclick="voltarGaleria()">
     <div class="carrinho-icon" onclick="abrirPaginaCarrinho()">Carrinho (<span id="contador-carrinho">0</span>)</div>
   </header>
 
-  <!-- Barra de busca -->
-  <div style="text-align: center; padding: 1rem;">
-    <input type="text" id="busca" placeholder="Pesquisar canecas..." oninput="filtrarProdutos()" style="padding: 0.5rem; width: 80%; max-width: 400px;">
+  <div class="busca-container">
+    <input type="text" id="busca" placeholder="Pesquisar canecas..." oninput="filtrarProdutos()" />
+    <span class="lupa">🔍</span>
   </div>
 
-  <!-- Galeria de produtos -->
   <section class="gallery" id="galeria"></section>
+"""
 
-  <!-- Área de compra individual -->
-  <section class="compra-area" id="compra">
-    <div class="produto-info">
-      <img id="compra-img" src="" alt="Produto">
-      <h2 id="compra-nome"></h2>
-      <p class="preco"><del id="preco-antigo"></del> <strong id="preco-novo"></strong></p>
-    </div>
-    <div>
-      <div class="quantidade">
-        <label>Quantidade: </label>
-        <input type="number" min="1" value="1" id="quantidade-input">
-      </div>
-      <button onclick="adicionarAoCarrinho()">Adicionar ao carrinho</button>
-      <button onclick="finalizarCompraUnica()">Comprar agora</button>
-      <a href="#" onclick="voltarGaleria()">← Voltar</a>
-    </div>
-  </section>
-  <!-- Carrinho de compras -->
-  <section class="carrinho-pagina" id="carrinho-pagina">
-    <h2>Itens no carrinho</h2>
-    <div id="lista-carrinho"></div>
-    <p class="total">Total: R$ <span id="total-carrinho">0,00</span></p>
-    <button onclick="comprarSelecionados()">Comprar agora</button>
-    <a href="#" onclick="voltarGaleria()">← Voltar</a>
-  </section>
+parte1_path = "/mnt/data/parte1_corrigida_photo_arts.html"
+with open(parte1_path, "w", encoding="utf-8") as f:
+    f.write(parte_1_corrigida)
 
-  <!-- Relatório de vendas -->
-  <section class="relatorio-pagina" id="relatorio-pagina" style="display:none; padding:2rem;">
-    <h2>Relatório de Venda</h2>
-    <div id="relatorio-lista"></div>
-    <button onclick="exportarRelatorio()" id="btn-exportar" style="margin-top: 1rem;">Exportar Relatório</button>
-    <a href="#" onclick="voltarGaleria()">← Voltar</a>
-  </section>
-
-  <!-- Página admin -->
-  <section id="admin-pagina" style="display:none; padding:2rem;">
-    <h2>Painel de Administração</h2>
-    <table style="width:100%; border-collapse: collapse;">
-      <thead>
-        <tr style="background:#f0f0f0">
-          <th>Produto</th><th>Estoque</th><th>Alterar</th>
-        </tr>
-      </thead>
-      <tbody id="admin-lista"></tbody>
-    </table>
-    <a href="#" onclick="voltarGaleria()">← Voltar</a>
-  </section>
-
-  <!-- Mensagens flutuantes -->
-  <div class="sucesso" id="sucesso">Compra realizada com sucesso!</div>
-  <div class="info" id="info">Itens adicionados ao carrinho!</div>
-  <div class="info" id="apagado">Item excluído do carrinho!</div>
-
-  <!-- Rodapé -->
-  <footer>
-    <p>WhatsApp: <a href="https://wa.me/5585987014326" target="_blank">(85) 9.8701-4326</a> |
-    Instagram: <a href="https://instagram.com/photo.arts.grafica" target="_blank">@photo.arts.grafica</a></p>
-  </footer>
-
-  <!-- WhatsApp flutuante -->
-  <div class="whatsapp-popup">
-    <a href="https://wa.me/5585987014326" target="_blank">💬 Fale conosco</a>
+parte1_path
+# Gerar a segunda parte do código corrigido (continuação do HTML e scripts)
+parte_2_corrigida = """
+<!-- Compra Individual -->
+<section class="compra-area" id="compra" style="display:none; flex-direction: column; align-items: center; padding: 2rem;">
+  <div class="produto-info" style="text-align:center;">
+    <img id="compra-img" src="" alt="Produto" style="max-width: 250px; border-radius: 12px;">
+    <h2 id="compra-nome"></h2>
+    <p class="preco"><del id="preco-antigo"></del> <strong id="preco-novo"></strong></p>
   </div>
+  <div style="margin-top:1rem; display:flex; align-items: center; gap: 0.5rem;">
+    <label for="quantidade-input">Quantidade:</label>
+    <button onclick="alterarQtd(-1)" style="padding: 0.3rem 0.6rem; font-weight: bold;">-</button>
+    <input type="number" min="1" value="1" id="quantidade-input" style="width: 60px; text-align:center;">
+    <button onclick="alterarQtd(1)" style="padding: 0.3rem 0.6rem; font-weight: bold;">+</button>
+  </div>
+  <div style="margin-top: 1rem;">
+    <button onclick="adicionarAoCarrinho()">🛒 Adicionar ao carrinho</button>
+    <button onclick="finalizarCompraUnica()">💳 Comprar agora</button>
+    <a href="#" onclick="voltarGaleria()" style="margin-left: 1rem;">← Voltar</a>
+  </div>
+</section>
 
-  <!-- Botão admin -->
-  <button onclick="abrirAdmin()" style="position:fixed; top:10px; left:10px; z-index:1000; background:#000; color:#fff; border:none; padding:5px 10px; border-radius:5px;">Admin</button>
+<!-- Mensagens flutuantes -->
+<div class="sucesso" id="sucesso">Compra realizada com sucesso!</div>
+<div class="info" id="info">Itens adicionados ao carrinho!</div>
+<div class="info" id="apagado">Item excluído do carrinho!</div>
 
-  <!-- Scripts -->
-  <script>
-    const produtos = [
-      { nome: 'Caneca Ceará (Tipo 1)', imagem: 'canecaCearaTipo1.jpg', preco: 25, original: 30 },
-      { nome: 'Caneca Fortaleza (Tipo 1)', imagem: 'canecaFortalezaTipo1.jpg', preco: 25, original: 30 },
-      { nome: 'Caneca Corinthians (Tipo 1)', imagem: 'canecaCorinthiansTipo1.jpg', preco: 25, original: 30 },
-      { nome: 'Caneca São Paulo (Tipo 1)', imagem: 'canecaSaoPauloTipo1.jpg', preco: 25, original: 30 },
-      { nome: 'Caneca Flamengo (Tipo 4)', imagem: 'canecaFlamengoTipo4.jpg', preco: 30, original: 35 }
-    ];
+<!-- WhatsApp flutuante -->
+<div class="whatsapp-popup">
+  <a href="https://wa.me/5585987014326" target="_blank">💬 Fale conosco</a>
+</div>
 
-    produtos.sort((a, b) => {
-      const tipoA = a.nome.match(/Tipo (\\d+)/);
-      const tipoB = b.nome.match(/Tipo (\\d+)/);
-      return (tipoA ? +tipoA[1] : 99) - (tipoB ? +tipoB[1] : 99);
-    });
+<!-- Scripts principais -->
+<script>
+  const produtos = [
+    { nome: 'Caneca Ceará (Tipo 1)', imagem: 'canecaCearaTipo1.jpg', preco: 25, original: 30 },
+    { nome: 'Caneca Fortaleza (Tipo 1)', imagem: 'canecaFortalezaTipo1.jpg', preco: 25, original: 30 },
+    { nome: 'Caneca Corinthians (Tipo 1)', imagem: 'canecaCorinthiansTipo1.jpg', preco: 25, original: 30 },
+    { nome: 'Caneca São Paulo (Tipo 1)', imagem: 'canecaSaoPauloTipo1.jpg', preco: 25, original: 30 },
+    { nome: 'Caneca Flamengo (Tipo 4)', imagem: 'canecaFlamengoTipo4.jpg', preco: 30, original: 35 }
+  ];
 
-    let carrinho = [];
-    let estoque = {};
-    produtos.forEach(p => { estoque[p.nome] = 999; });
+  let carrinho = [];
+  let estoque = {};
+  produtos.forEach(p => estoque[p.nome] = 999);
 
-    const galeria = document.getElementById('galeria');
-    function carregarProdutos() {
-      galeria.innerHTML = '';
-      produtos.forEach(p => {
-        const esgotado = estoque[p.nome] <= 0;
-        galeria.innerHTML += `
+  function carregarProdutos() {
+    const galeria = document.getElementById("galeria");
+    galeria.innerHTML = "";
+    produtos.forEach(p => {
+      const esgotado = estoque[p.nome] <= 0;
+      galeria.innerHTML += `
         <div class="item">
           <img src="${p.imagem}" alt="${p.nome}" class="${esgotado ? 'soldout' : ''}">
           ${esgotado ? '<div class="soldout-text">Fora de estoque</div>' : ''}
@@ -261,175 +222,74 @@
           <p class="preco"><del>R$ ${p.original},00</del> <strong>R$ ${p.preco},00</strong></p>
           <button ${esgotado ? 'disabled' : ''} onclick="abrirCompra('${p.imagem}', '${p.nome}', ${p.preco}, ${p.original})">Comprar</button>
         </div>`;
-      });
-    }
+    });
+  }
 
+  function abrirCompra(imagem, nome, preco, original) {
+    document.getElementById('galeria').style.display = 'none';
+    document.getElementById('compra').style.display = 'flex';
+    document.getElementById('compra-img').src = imagem;
+    document.getElementById('compra-nome').innerText = nome;
+    document.getElementById('preco-antigo').innerText = `R$ ${original},00`;
+    document.getElementById('preco-novo').innerText = `R$ ${preco},00`;
+    document.getElementById('quantidade-input').value = 1;
+  }
+
+  function alterarQtd(valor) {
+    const input = document.getElementById('quantidade-input');
+    let novaQtd = parseInt(input.value) + valor;
+    input.value = Math.max(1, novaQtd);
+  }
+
+  function voltarGaleria() {
+    document.querySelectorAll('section').forEach(s => s.style.display = 'none');
+    document.getElementById('galeria').style.display = 'flex';
     carregarProdutos();
+    atualizarCarrinho();
+  }
 
-    function abrirCompra(imagem, nome, preco, original) {
-      document.getElementById('galeria').style.display = 'none';
-      document.getElementById('compra').style.display = 'flex';
-      document.getElementById('carrinho-pagina').style.display = 'none';
-      document.getElementById('relatorio-pagina').style.display = 'none';
-      document.getElementById('admin-pagina').style.display = 'none';
-      document.getElementById('compra-img').src = imagem;
-      document.getElementById('compra-nome').innerText = nome;
-      document.getElementById('preco-antigo').innerText = `R$ ${original},00`;
-      document.getElementById('preco-novo').innerText = `R$ ${preco},00`;
-    }
+  function adicionarAoCarrinho() {
+    const nome = document.getElementById('compra-nome').innerText;
+    const qtd = parseInt(document.getElementById('quantidade-input').value);
+    const preco = document.getElementById('preco-novo').innerText;
+    carrinho.push({ nome, qtd, preco });
+    mostrarMensagem('info');
+    atualizarCarrinho();
+  }
 
-    function voltarGaleria() {
-      document.querySelectorAll('section').forEach(sec => sec.style.display = 'none');
-      document.getElementById('galeria').style.display = 'flex';
-      carregarProdutos();
-      atualizarCarrinho();
-    }
+  function finalizarCompraUnica() {
+    mostrarMensagem('sucesso');
+  }
 
-    function adicionarAoCarrinho() {
-      const nome = document.getElementById('compra-nome').innerText;
-      const qtd = parseInt(document.getElementById('quantidade-input').value);
-      const preco = document.getElementById('preco-novo').innerText;
-      carrinho.push({ nome, qtd, preco });
-      mostrarMensagem('info');
-      atualizarCarrinho();
-    }
+  function atualizarCarrinho() {
+    document.getElementById('contador-carrinho').innerText = carrinho.reduce((t, i) => t + i.qtd, 0);
+  }
 
-    function finalizarCompraUnica() {
-      mostrarMensagem('sucesso');
-    }
+  function mostrarMensagem(id) {
+    const el = document.getElementById(id);
+    el.style.display = 'block';
+    setTimeout(() => { el.style.display = 'none'; }, 3000);
+  }
 
-    function atualizarCarrinho() {
-      document.getElementById('contador-carrinho').innerText = carrinho.reduce((t, i) => t + i.qtd, 0);
-    }
+  function filtrarProdutos() {
+    const termo = document.getElementById('busca').value.toLowerCase();
+    const itens = document.querySelectorAll('.gallery .item');
+    itens.forEach(item => {
+      const texto = item.innerText.toLowerCase();
+      item.style.display = texto.includes(termo) ? 'block' : 'none';
+    });
+  }
 
-    function abrirPaginaCarrinho() {
-      document.querySelectorAll('section').forEach(sec => sec.style.display = 'none');
-      document.getElementById('carrinho-pagina').style.display = 'block';
-      const lista = document.getElementById('lista-carrinho');
-      lista.innerHTML = '';
-      carrinho.forEach((item, i) => {
-        lista.innerHTML += `
-          <div class="carrinho-item">
-            <input type="checkbox" id="item-${i}" checked onchange="atualizarTotalCarrinho()">
-            <span>${item.nome}</span>
-            <input type="number" min="1" value="${item.qtd}" onchange="atualizarQuantidade(${i}, this.value)">
-            <span>${item.preco}</span>
-            <button onclick="excluirItem(${i})">Excluir</button>
-          </div>`;
-      });
-      lista.innerHTML += `<button onclick="limparCarrinho()">Limpar Tudo</button>`;
-      atualizarTotalCarrinho();
-    }
-
-    function atualizarTotalCarrinho() {
-      let total = 0;
-      carrinho.forEach((item, i) => {
-        if (document.getElementById(`item-${i}`)?.checked) {
-          const val = parseFloat(item.preco.replace('R$ ', '').replace(',00', ''));
-          total += val * item.qtd;
-        }
-      });
-      document.getElementById("total-carrinho").innerText = total.toFixed(2).replace('.', ',');
-    }
-
-    function atualizarQuantidade(i, qtd) {
-      carrinho[i].qtd = parseInt(qtd);
-      atualizarTotalCarrinho();
-      atualizarCarrinho();
-    }
-
-    function excluirItem(i) {
-      if (confirm("Deseja remover este item?")) {
-        carrinho.splice(i, 1);
-        abrirPaginaCarrinho();
-        mostrarMensagem("apagado");
-      }
-    }
-
-    function limparCarrinho() {
-      if (confirm("Deseja limpar o carrinho?")) {
-        carrinho = [];
-        abrirPaginaCarrinho();
-        mostrarMensagem("apagado");
-      }
-    }
-
-    function mostrarMensagem(id) {
-      const el = document.getElementById(id);
-      el.style.display = 'block';
-      setTimeout(() => { el.style.display = 'none'; }, 3000);
-    }
-
-    function comprarSelecionados() {
-      const vendidos = [];
-      carrinho = carrinho.filter((item, i) => {
-        if (document.getElementById(`item-${i}`)?.checked) {
-          vendidos.push(item);
-          return false;
-        }
-        return true;
-      });
-      atualizarCarrinho();
-      mostrarRelatorio(vendidos);
-    }
-
-    function mostrarRelatorio(itens) {
-      document.querySelectorAll('section').forEach(sec => sec.style.display = 'none');
-      document.getElementById('relatorio-pagina').style.display = 'block';
-      document.getElementById('btn-exportar').style.display = 'inline-block';
-      let total = 0;
-      const relatorio = document.getElementById('relatorio-lista');
-      relatorio.innerHTML = '<ul>';
-      itens.forEach(item => {
-        const preco = parseFloat(item.preco.replace('R$ ', '').replace(',00', ''));
-        const subtotal = preco * item.qtd;
-        total += subtotal;
-        estoque[item.nome] = Math.max(0, estoque[item.nome] - item.qtd);
-        relatorio.innerHTML += `<li><strong>${item.nome}</strong> — ${item.qtd}x R$ ${preco},00 = R$ ${subtotal.toFixed(2).replace('.', ',')}</li>`;
-      });
-      relatorio.innerHTML += `</ul><p><strong>Total da venda:</strong> R$ ${total.toFixed(2).replace('.', ',')}</p>`;
-    }
-
-    function exportarRelatorio() {
-      const conteudo = document.getElementById('relatorio-lista').innerText;
-      const blob = new Blob([conteudo], { type: 'text/plain' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'relatorio.txt';
-      a.click();
-      URL.revokeObjectURL(url);
-    }
-
-    function abrirAdmin() {
-      document.querySelectorAll('section').forEach(sec => sec.style.display = 'none');
-      document.getElementById('admin-pagina').style.display = 'block';
-      const adminLista = document.getElementById('admin-lista');
-      adminLista.innerHTML = '';
-      for (const nome in estoque) {
-        adminLista.innerHTML += `
-        <tr>
-          <td>${nome}</td>
-          <td>${estoque[nome]}</td>
-          <td><input type='number' min='0' value='${estoque[nome]}' onchange='atualizarEstoque("${nome}", this.value)'></td>
-        </tr>`;
-      }
-    }
-
-    function atualizarEstoque(nome, novoValor) {
-      estoque[nome] = parseInt(novoValor);
-      abrirAdmin();
-    }
-
-    function filtrarProdutos() {
-      const termo = document.getElementById('busca').value.toLowerCase();
-      const itens = document.querySelectorAll('.gallery .item');
-      itens.forEach(item => {
-        const texto = item.innerText.toLowerCase();
-        item.style.display = texto.includes(termo) ? 'block' : 'none';
-      });
-    }
-  </script>
+  carregarProdutos();
+</script>
 
 </body>
 </html>
+"""
+
+# Salvar a segunda parte como arquivo
+parte2_path = "/mnt/data/parte2_corrigida_photo_arts.html"
+with open(parte2_path, "w", encoding="utf-8") as f:
+    f.write(parte_2_corrigida)
+
+parte2_pat
