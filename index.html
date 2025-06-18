@@ -5,9 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Photo & Arts - Gráfica e Personalizados</title>
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
     body {
       margin: 0;
       padding: 0;
@@ -50,7 +48,7 @@
     }
     .item {
       width: 280px;
-      flex: 0 0 auto;
+      height: 430px;
       text-align: center;
       background: #fff;
       border-radius: 12px;
@@ -58,6 +56,7 @@
       padding: 1rem;
       display: flex;
       flex-direction: column;
+      justify-content: space-between;
       transition: transform 0.3s ease, box-shadow 0.3s ease;
       position: relative;
     }
@@ -66,12 +65,12 @@
     }
     .item img {
       width: 100%;
+      height: 180px;
+      object-fit: cover;
       border-radius: 12px;
       margin-bottom: 0.5rem;
     }
-    .item img.soldout {
-      filter: grayscale(1);
-    }
+    .item img.soldout { filter: grayscale(1); }
     .soldout-text {
       position: absolute;
       top: 10px;
@@ -82,6 +81,14 @@
       font-size: 0.9rem;
       border-radius: 5px;
     }
+    .item h3 {
+      font-size: 1rem;
+      margin: 0.5rem 0;
+      height: 2.6rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
     .item button {
       background: linear-gradient(to right, #ff5a5f, #ff8a65);
       border: none;
@@ -90,7 +97,6 @@
       color: white;
       font-weight: bold;
       cursor: pointer;
-      margin-top: 0.5rem;
       transition: 0.3s;
     }
     .item button:hover {
@@ -153,6 +159,20 @@
       pointer-events: none;
       font-size: 1.2rem;
     }
+    .sucesso, .info {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: 1rem 2rem;
+      border-radius: 6px;
+      z-index: 1000;
+      font-weight: bold;
+      text-align: center;
+    }
+    .sucesso { background: #d4edda; border: 1px solid #c3e6cb; color: #155724; }
+    .info { background: #fff3cd; border: 1px solid #ffeeba; color: #856404; }
   </style>
 </head>
 <body>
@@ -167,8 +187,7 @@
   </div>
 
   <section class="gallery" id="galeria"></section>
-  
-<!-- Seção de compra individual -->
+<!-- Compra Individual -->
 <section class="compra-area" id="compra" style="display:none; flex-direction: column; align-items: center; padding: 2rem;">
   <div class="produto-info" style="text-align:center;">
     <img id="compra-img" src="" alt="Produto" style="max-width: 250px; border-radius: 12px;">
@@ -176,10 +195,10 @@
     <p class="preco"><del id="preco-antigo"></del> <strong id="preco-novo"></strong></p>
   </div>
   <div style="margin-top:1rem; display:flex; align-items: center; gap: 0.5rem;">
-    <label for="quantidade-input">Quantidade:</label>
-    <button onclick="alterarQtd(-1)" style="padding: 0.3rem 0.6rem; font-weight: bold;">-</button>
+    <label for="quantidade-input">Qtd:</label>
+    <button onclick="alterarQtd(-1)" style="padding: 0.3rem 0.6rem;">-</button>
     <input type="number" min="1" value="1" id="quantidade-input" style="width: 60px; text-align:center;">
-    <button onclick="alterarQtd(1)" style="padding: 0.3rem 0.6rem; font-weight: bold;">+</button>
+    <button onclick="alterarQtd(1)" style="padding: 0.3rem 0.6rem;">+</button>
   </div>
   <div style="margin-top: 1rem;">
     <button onclick="adicionarAoCarrinho()">🛒 Adicionar ao carrinho</button>
@@ -189,21 +208,21 @@
 </section>
 
 <!-- Mensagens flutuantes -->
-<div class="sucesso" id="sucesso">Compra realizada com sucesso!</div>
-<div class="info" id="info">Itens adicionados ao carrinho!</div>
-<div class="info" id="apagado">Item excluído do carrinho!</div>
+<div class="sucesso" id="sucesso" style="display:none;">Compra realizada com sucesso!</div>
+<div class="info" id="info" style="display:none;">Itens adicionados ao carrinho!</div>
+<div class="info" id="apagado" style="display:none;">Item excluído do carrinho!</div>
 
 <!-- WhatsApp flutuante -->
 <div class="whatsapp-popup">
   <a href="https://wa.me/5585987014326" target="_blank">💬 Fale conosco</a>
 </div>
 
-<!-- Scripts principais -->
+<!-- Scripts -->
 <script>
   const produtos = [
     { nome: 'Caneca Ceará (Tipo 1)', imagem: 'canecaCearaTipo1.jpg', preco: 25, original: 30 },
     { nome: 'Caneca Fortaleza (Tipo 1)', imagem: 'canecaFortalezaTipo1.jpg', preco: 25, original: 30 },
-    { nome: 'Caneca Corinthians        (Tipo 1)', imagem: 'canecaCorinthiansTipo1.jpg', preco: 25, original: 30 },
+    { nome: 'Caneca Corinthians (Tipo 1)', imagem: 'canecaCorinthiansTipo1.jpg', preco: 25, original: 30 },
     { nome: 'Caneca São Paulo (Tipo 1)', imagem: 'canecaSaoPauloTipo1.jpg', preco: 25, original: 30 },
     { nome: 'Caneca Flamengo (Tipo 4)', imagem: 'canecaFlamengoTipo4.jpg', preco: 30, original: 35 }
   ];
@@ -217,11 +236,12 @@
     galeria.innerHTML = "";
     produtos.forEach(p => {
       const esgotado = estoque[p.nome] <= 0;
+      const nomeLimitado = p.nome.length > 60 ? p.nome.substring(0, 57) + "..." : p.nome;
       galeria.innerHTML += `
         <div class="item">
           <img src="${p.imagem}" alt="${p.nome}" class="${esgotado ? 'soldout' : ''}">
           ${esgotado ? '<div class="soldout-text">Fora de estoque</div>' : ''}
-          <h3>${p.nome}</h3>
+          <h3 title="${p.nome}">${nomeLimitado}</h3>
           <p class="preco"><del>R$ ${p.original},00</del> <strong>R$ ${p.preco},00</strong></p>
           <button ${esgotado ? 'disabled' : ''} onclick="abrirCompra('${p.imagem}', '${p.nome}', ${p.preco}, ${p.original})">Comprar</button>
         </div>`;
@@ -288,3 +308,4 @@
 
 </body>
 </html>
+
