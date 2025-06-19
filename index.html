@@ -187,6 +187,153 @@
   </div>
 
   <section class="gallery" id="galeria"></section>
+
+<!-- Carrinho de compras -->
+<section id="carrinho-pagina" style="display:none; padding:2rem;">
+  <h2>Seu Carrinho</h2>
+  <div id="lista-carrinho"></div>
+  <p style="font-size: 1.2rem; margin-top: 1rem;"><strong>Total: R$ <span id="total-carrinho">0,00</span></strong></p>
+  <button onclick="comprarSelecionados()" style="background:#28a745; color:white; padding:0.6rem 1rem; border:none; border-radius:8px;">Comprar agora</button>
+  <button onclick="limparCarrinho()" style="background:#dc3545; color:white; padding:0.6rem 1rem; border:none; border-radius:8px; margin-left:1rem;">Limpar Carrinho</button>
+  <br><br>
+  <a href="#" onclick="voltarGaleria()">← Voltar para página inicial</a>
+</section>
+
+<!-- Aba de confirmação da compra -->
+<section id="confirmacao-pagina" style="display:none; padding:2rem;">
+  <h2>Resumo da Compra</h2>
+  <div id="resumo-compra"></div>
+  <p style="font-size: 1.2rem;"><strong>Total da compra: R$ <span id="total-compra-final">0,00</span></strong></p>
+  <button onclick="finalizarCompra()" style="background:#007bff; color:white; padding:0.6rem 1rem; border:none; border-radius:8px;">Finalizar Compra</button>
+  <br><br>
+  <a href="#" onclick="voltarGaleria()">← Voltar para página inicial</a>
+</section>
+
+<!-- Estilo adicional para itens do carrinho -->
+<style>
+  .carrinho-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.7rem;
+    margin: 0.5rem 0;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  .carrinho-item span {
+    flex: 1;
+    text-align: left;
+    margin: 0 0.5rem;
+  }
+  .carrinho-item input[type="number"] {
+    width: 60px;
+    text-align: center;
+  }
+  .carrinho-item input[type="checkbox"] {
+    transform: scale(1.2);
+  }
+  .carrinho-item button {
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 0.3rem 0.6rem;
+    cursor: pointer;
+  }
+</style>
+<script>
+  function abrirPaginaCarrinho() {
+    document.querySelectorAll('section').forEach(sec => sec.style.display = 'none');
+    document.getElementById('carrinho-pagina').style.display = 'block';
+    atualizarCarrinhoVisual();
+  }
+
+  function atualizarCarrinhoVisual() {
+    const lista = document.getElementById('lista-carrinho');
+    lista.innerHTML = '';
+    let total = 0;
+
+    carrinho.forEach((item, index) => {
+      const precoNum = parseFloat(item.preco.replace("R$ ", "").replace(",00", ""));
+      total += item.qtd * precoNum;
+
+      lista.innerHTML += `
+        <div class="carrinho-item">
+          <input type="checkbox" id="chk-${index}" checked>
+          <span>${item.nome}</span>
+          <input type="number" min="1" value="${item.qtd}" onchange="alterarQuantidade(${index}, this.value)">
+          <span>${item.preco}</span>
+          <button onclick="excluirItem(${index})">🗑</button>
+        </div>
+      `;
+    });
+
+    document.getElementById("total-carrinho").innerText = total.toFixed(2).replace('.', ',');
+  }
+
+  function alterarQuantidade(index, novaQtd) {
+    carrinho[index].qtd = parseInt(novaQtd);
+    atualizarCarrinho();
+    atualizarCarrinhoVisual();
+  }
+
+  function excluirItem(index) {
+    if (confirm("Deseja remover este item?")) {
+      carrinho.splice(index, 1);
+      mostrarMensagem("apagado");
+      atualizarCarrinho();
+      atualizarCarrinhoVisual();
+    }
+  }
+
+  function limparCarrinho() {
+    if (confirm("Deseja esvaziar o carrinho?")) {
+      carrinho = [];
+      atualizarCarrinho();
+      atualizarCarrinhoVisual();
+    }
+  }
+
+  function comprarSelecionados() {
+    const selecionados = carrinho.filter((_, i) => document.getElementById(`chk-${i}`).checked);
+    if (selecionados.length === 0) {
+      alert("Selecione ao menos um item para comprar.");
+      return;
+    }
+
+    let resumo = '';
+    let total = 0;
+
+    selecionados.forEach(item => {
+      const precoNum = parseFloat(item.preco.replace("R$ ", "").replace(",00", ""));
+      const subtotal = precoNum * item.qtd;
+      total += subtotal;
+      resumo += `<p>${item.nome} — ${item.qtd}x R$ ${precoNum.toFixed(2).replace('.', ',')} = R$ ${subtotal.toFixed(2).replace('.', ',')}</p>`;
+    });
+
+    document.getElementById('resumo-compra').innerHTML = resumo;
+    document.getElementById('total-compra-final').innerText = total.toFixed(2).replace('.', ',');
+
+    document.querySelectorAll('section').forEach(sec => sec.style.display = 'none');
+    document.getElementById('confirmacao-pagina').style.display = 'block';
+  }
+
+  function finalizarCompra() {
+    const novosCarrinho = [];
+    carrinho.forEach((item, i) => {
+      if (!document.getElementById(`chk-${i}`).checked) {
+        novosCarrinho.push(item);
+      }
+    });
+
+    carrinho = novosCarrinho;
+    mostrarMensagem("sucesso");
+    atualizarCarrinho();
+    voltarGaleria();
+  }
+</script>
+
 <!-- Compra Individual -->
 <section class="compra-area" id="compra" style="display:none; flex-direction: column; align-items: center; padding: 2rem;">
   <div class="produto-info" style="text-align:center;">
